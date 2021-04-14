@@ -200,6 +200,23 @@ def standardize(X, flag_1d = False):
     X_std = (X - m) / std
     return X_std
 
+def min_max_standardize(X, target_max, target_min):
+    '''
+    Parameters
+    ----------
+    X : numpy array of size (N, D)
+    target_max : target max value after transformation
+    target_min : target min value after transformation
+
+    Returns
+    -------
+    Transformed X with value range from (target_min, target_max)
+
+    '''
+    X_std = (X - X.min(axis=0)) / (X.max(axis=0) - X.min(axis=0))
+    X_scaled = X_std * (target_max - target_min) + target_min
+    return X_scaled
+
 def get_vector_norm(X, k):
     '''
     Parameters
@@ -217,3 +234,7 @@ def get_vector_norm(X, k):
     return np.sum(np.power(X_abs, k)) ** (1/k)
     #return np.linalg.norm(X, k)
 
+def get_covariance_matrix(X):
+    N = X.shape[0]
+    return (1 / (N-1)) * (X - X.mean(axis=0)).T.dot(X - X.mean(axis=0))
+    #return np.cov(X.T, ddof=1)
