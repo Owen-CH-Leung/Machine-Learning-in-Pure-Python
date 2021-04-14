@@ -57,10 +57,10 @@ if __name__ == '__main__':
     k = 3
     tolerance = 1e-6
     model = gaussian_mixture_model(k, tolerance)
-    model.initiate_random_gaussian(X[:,1:])
+    model.initiate_random_gaussian(X)
     while not model.check_converge():
-        model.expectation_step(X[:,1:])
-        model.maximization_step(X[:,1:])
+        model.expectation_step(X)
+        model.maximization_step(X)
     x_axis = np.arange(N)
     plt.scatter(x_axis, X.mean(axis=1), c = model.assignment)
     plt.show()
