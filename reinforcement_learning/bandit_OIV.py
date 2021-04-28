@@ -1,5 +1,4 @@
 import numpy as np
-from utils.epsilon import standard_epsilon, decaying_epsilon, exponential_decay_epsilon
 import matplotlib.pyplot as plt
 
 class bandit:
