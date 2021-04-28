@@ -2,7 +2,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 import scipy.sparse as sparse
 from sklearn.datasets import make_classification
-from sklearn.datasets import load_digits, load_breast_cancer
+from sklearn.datasets import load_digits, load_breast_cancer, load_iris
 
 def generate_one_dim_data(N):
     '''
@@ -224,7 +224,11 @@ def get_digits():
 def get_cancer():
     X, Y = load_breast_cancer(return_X_y = True)
     return X, Y
-    
+
+def get_iris():
+    X, Y = load_iris(return_X_y = True)
+    return X, Y
+
 def generate_cluster_data(N, D, n_cluster, plot=True):
     '''
     Parameters
