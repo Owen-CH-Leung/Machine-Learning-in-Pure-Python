@@ -2,73 +2,140 @@ import numpy as np
 
 class ActivationFunction:
     @staticmethod
-    def sigmoid(W, X):
+    def sigmoid(A):
         '''
         Parameters
         ----------
-        W : numpy array of size (D, M)
-        X : numpy array of size (D, N)
+        A : numpy array of size (M, N), derived by :
+            W : numpy array of size (D, M)
+            X : numpy array of size (D, N)
             
         Returns
         -------
         numpy array of size (M, N)
         '''
-        return 1 / (1 + np.exp(-1 * (W.T.dot(X))))
+        return 1 / (1 + np.exp(-1 * A))
     
     @staticmethod
-    def tanh(W, X):
+    def tanh(A):
         '''
         Parameters
         ----------
-        W : numpy array of size (D, M)
-        X : numpy array of size (D, N)
+        A : numpy array of size (M, N), derived by :
+            W : numpy array of size (D, M)
+            X : numpy array of size (D, N)
             
         Returns
         -------
         numpy array of size (M, N)
         '''
-        x = W.T.dot(X)
-        return (np.exp(x) - np.exp(-x)) / (np.exp(x) + np.exp(-x))
+        return (np.exp(A) - np.exp(-A)) / (np.exp(A) + np.exp(-A))
     
     @staticmethod
-    def relu(W, X):
+    def relu(A):
         '''
         Parameters
         ----------
-        W : numpy array of size (D, M)
-        X : numpy array of size (D, N)
+        A : numpy array of size (M, N), derived by :
+            W : numpy array of size (D, M)
+            X : numpy array of size (D, N)
             
         Returns
         -------
         numpy array of size (M, N)
         '''
-        x = W.T.dot(X)
-        return np.maximum(x, 0)
+        return np.maximum(A, 0)
     
-    def softmax(W, X):
+    def softmax(A):
         '''
         Parameters
         ----------
-        W : numpy array of size (M, K)
-        X : numpy array of size (M, N)
+        A : numpy array of size (M, N), derived by :
+            W : numpy array of size (D, M)
+            X : numpy array of size (D, N)
             
         Returns
         -------
         numpy array of size (M, N)
         '''
-        x = W.T.dot(X)
-        exp_X = np.exp(x)
-        return exp_X / exp_X.sum(axis=1, keepdims=True)
+        exp_X = np.exp(A)
+        return exp_X / exp_X.sum(axis=0, keepdims=True)
     
+class LossFunction:
+    @staticmethod
+    def BinaryCrossEntropy(T, Y_pred):        
+        '''
+        Parameters
+        ----------
+        T : numpy array of size (N,)
+            The target column Y
+            
+        Y_pred : numpy array of size (N,)
+            The predicted probabilities of Y
+    
+        Returns
+        -------
+        A single scalar cost which stands for the total error 
+        '''
+        return -1* np.sum(T * np.log(Y_pred) + (1-T) * np.log(1-Y_pred))
+    
+    @staticmethod
+    def CrossEntropy(T, Y_pred):
+        '''
+        Parameters
+        ----------
+        T : numpy array of size (N, K) (K number of distinct class)
+            The target column Y
+            
+        Y_pred : numpy array of size (N, K)
+            The predicted probabilities of Y
+    
+        Returns
+        -------
+        A single scalar cost which stands for the total error 
+        '''
+        return -1 * (np.sum(T * np.log(Y_pred)))
 
+class ActivationFunctionDerivative:
+    @staticmethod
+    def sigmoid(Z):
+        '''
+        Parameters
+        ----------
+        Z : numpy array of size (M, N), derived by :
+            W : numpy array of size (D, M)
+            X : numpy array of size (D, N)
+            
+        Returns
+        -------
+        numpy array of size (M, N)
+        '''
+        return ActivationFunction.sigmoid(Z) * (1 - ActivationFunction.sigmoid(Z))
     
-if __name__ == '__main__':
-    N = 10
-    D = 2
-    M = 4
-    K = 3
-    X = np.random.random((D, N)) - 0.5
-    W1 = np.random.random((D, M)) 
-    W2 = np.random.random((M, K))
-    z1 = ActivationFunction.sigmoid(W1, X)
-    pred_y = ActivationFunction.softmax(W2, z1)
+    def tanh(Z):
+        '''
+        Parameters
+        ----------
+        Z : numpy array of size (M, N), derived by :
+            W : numpy array of size (D, M)
+            X : numpy array of size (D, N)
+            
+        Returns
+        -------
+        numpy array of size (M, N)
+        '''
+        return 1 - ((ActivationFunction.tanh(Z)) ** 2)
+    
+    def relu(Z):
+        '''
+        Parameters
+        ----------
+        Z : numpy array of size (M, N), derived by :
+            W : numpy array of size (D, M)
+            X : numpy array of size (D, N)
+            
+        Returns
+        -------
+        numpy array of size (M, N)
+        '''
+        return np.where(Z <= 0, 0, 1)
